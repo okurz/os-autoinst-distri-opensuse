@@ -46,3 +46,4 @@ as a helpful (but not mandatory) guideline for new contributions.
 
 Most files are minimal copyleft, but some more complex tests are GPL. So please
 check the license within the files.
+foo
