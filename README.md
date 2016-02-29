@@ -49,3 +49,4 @@ check the license within the files.
 foo
 bar
 foo
+bar
