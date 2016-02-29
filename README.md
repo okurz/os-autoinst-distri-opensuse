@@ -55,3 +55,4 @@ bar
 foo
 bar
 foo
+bar
