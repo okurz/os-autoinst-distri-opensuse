@@ -11,5 +11,6 @@ before_install:
   - echo "requires 'Code::DRY';" >> cpanfile
 install:
   - make prepare
+  - pip install gitlint
 script:
   - make test
