@@ -1,4 +1,5 @@
 PERL5LIB_:=../..:os-autoinst:lib:tests/installation:tests/x11:tests/qa_automation:tests/virt_autotest:$$PERL5LIB
+GITLINT := $(shell command -v gitlint)
 
 .PHONY: all
 all:
@@ -76,3 +77,6 @@ PERLCRITIC=PERL5LIB=tools/lib/perlcritic:$$PERL5LIB perlcritic --quiet --gentle 
 perlcritic: tools/lib/
 	${PERLCRITIC} .
 
+.PHONY: check-commit-msg
+check-commit-msg:
+ifndef
