@@ -134,6 +134,7 @@ sub fill_in_registration_data {
                     # checkmark the requested addon
                     assert_and_click "scc-module-$addon";
                 }
+                save_screenshot;
             }
             send_key $cmd{next};    # all addons selected
             for my $addon (@scc_addons) {
