@@ -149,6 +149,7 @@ sub post_fail_hook() {
     $self->SUPER::post_fail_hook;
     select_console 'log-console';
     $self->save_upload_y2logs;
+    $self->save_satsolver_logs;
 }
 
 1;

@@ -82,5 +82,11 @@ sub run() {
     $self->wait_boot(bootloader_time => 300);
 }
 
+sub post_fail_hook() {
+    my ($self) = @_;
+    upload_logs '/var/log/zypper.log';
+    $self->save_satsolver_logs;
+}
+
 1;
 # vim: set sw=4 et:
