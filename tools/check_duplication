@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Code::DRY;
+use Cwd;
+use File::Spec;
+
+
+sub catch_output {
+    my $s;
+    open local *STDERR, '>', \$s;
+    return $s;
+}
+
+my $path = File::Spec->catfile(getcwd, '*.pm');
+chomp(my @files = `git ls-files "$path"`);
+my $out = catch_output { Code::DRY::find_duplicates_in(60, '^1;', @files) };
+#print "OUT: $out\n";
