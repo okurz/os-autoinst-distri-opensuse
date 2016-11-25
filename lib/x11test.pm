@@ -63,6 +63,8 @@ sub enter_test_text {
     $name       //= 'your program';
     $args{cmd}  //= 0;
     $args{slow} //= 0;
+    # TODO we agreed in openQA call on 20161125 that we should not need these
+    # lines at all so get rid and let's see how tests handle it :-)
     for (1 .. 13) { send_key 'ret' }
     my $text = "If you can see this text $name is working.\n";
     $text = 'echo ' . $text if $args{cmd};
