@@ -21,6 +21,8 @@ use Exporter;
 use strict;
 
 use testapi qw(is_serial_terminal :DEFAULT);
+use testapi;
+use needle;
 
 our @EXPORT = qw(
   check_console_font
@@ -60,6 +62,12 @@ our @EXPORT = qw(
   service_action
   assert_gui_app
   install_all_from_repo
+  register_needle_tags
+  unregister_needle_tags
+  remove_desktop_needles
+  remove_common_needles
+  cleanup_sle_needles
+  reload_all_needles
 );
 
 
@@ -910,6 +918,123 @@ sub install_all_from_repo {
     }
     my $exec_str = sprintf("zypper se -ur %s -t package | awk '{print \$2}' | sed '1,/|/d' %s | xargs zypper -n in", $repo, $grep_str);
     assert_script_run($exec_str);
+}
+
+sub register_needle_tags {
+    my ($tag) = @_;
+    my @a = @{needle::tags($tag)};
+    for my $n (@a) { $n->register(); }
+}
+
+sub unregister_needle_tags {
+    my ($tag) = @_;
+    my @a = @{needle::tags($tag)};
+    for my $n (@a) { $n->unregister(); }
+}
+
+sub remove_desktop_needles {
+    my $desktop = shift;
+    if (!check_var("DESKTOP", $desktop) && !check_var("FULL_DESKTOP", $desktop)) {
+        unregister_needle_tags("ENV-DESKTOP-$desktop");
+    }
+}
+
+sub remove_common_needles {
+    my $no_skipto = get_var('SKIPTO') ? 0 : 1;
+    unregister_needle_tags("ENV-SKIPTO-$no_skipto");
+    remove_desktop_needles("lxde");
+    remove_desktop_needles("kde");
+    remove_desktop_needles("gnome");
+    remove_desktop_needles("xfce");
+    remove_desktop_needles("minimalx");
+    remove_desktop_needles("textmode");
+
+    if (!check_var("VIDEOMODE", "text")) {
+        unregister_needle_tags("ENV-VIDEOMODE-text");
+    }
+
+    if (get_var("INSTLANG") && get_var("INSTLANG") ne "en_US") {
+        unregister_needle_tags("ENV-INSTLANG-en_US");
+    }
+    else {    # english default
+        unregister_needle_tags("ENV-INSTLANG-de_DE");
+    }
+}
+
+sub is_sle_server {
+    return is_sles4sap() || get_var('FLAVOR', '') =~ /^Server/;
+}
+
+sub is_sle_desktop {
+    return get_var('FLAVOR', '') =~ /^Desktop/;
+}
+
+sub is_sles4sap {
+    return get_var('FLAVOR', '') =~ /SAP/;
+}
+
+sub cleanup_sle_needles {
+    remove_common_needles;
+    if (get_var('VERSION', '') ne '12') {
+        unregister_needle_tags("ENV-VERSION-12");
+    }
+
+    if (get_var('VERSION', '') ne '12-SP1') {
+        unregister_needle_tags("ENV-VERSION-12-SP1");
+    }
+
+    if (get_var('VERSION', '') ne '12-SP2') {
+        unregister_needle_tags("ENV-VERSION-12-SP2");
+    }
+
+    if (get_var('VERSION', '') ne '12-SP3') {
+        unregister_needle_tags("ENV-VERSION-12-SP3");
+    }
+
+    my $tounregister = sle_version_at_least('12-SP2') ? '0' : '1';
+    unregister_needle_tags("ENV-SP2ORLATER-$tounregister");
+
+    $tounregister = sle_version_at_least('12-SP3') ? '0' : '1';
+    unregister_needle_tags("ENV-SP3ORLATER-$tounregister");
+
+    if (!is_server) {
+        unregister_needle_tags("ENV-FLAVOR-Server-DVD");
+    }
+
+    if (!is_desktop) {
+        unregister_needle_tags("ENV-FLAVOR-Desktop-DVD");
+    }
+
+    if (!is_jeos) {
+        unregister_needle_tags('ENV-FLAVOR-JeOS-for-kvm');
+    }
+
+    if (!is_casp) {
+        unregister_needle_tags('ENV-DISTRI-CASP');
+    }
+
+    if (!check_var("ARCH", "s390x")) {
+        unregister_needle_tags('ENV-ARCH-s390x');
+    }
+
+    if (get_var('OFW')) {
+        unregister_needle_tags('ENV-OFW-0');
+    }
+    else {
+        unregister_needle_tags('ENV-OFW-1');
+    }
+}
+
+sub reload_all_needles {
+    for my $n (needle->all()) {
+        $n->unregister();
+    }
+    needle::init(get_required_var('PRODUCTDIR') . '/needles');
+}
+
+sub reload_all_sle_needles {
+    reload_all_needles;
+    cleanup_sle_needles;
 }
 
 1;

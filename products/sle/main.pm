@@ -24,15 +24,15 @@ use main_common;
 init_main();
 
 sub is_server {
-    return is_sles4sap() || get_var('FLAVOR', '') =~ /^Server/;
+    return utils::is_sle_server;
 }
 
 sub is_desktop {
-    return get_var('FLAVOR', '') =~ /^Desktop/;
+    return utils::is_sle_desktop;
 }
 
 sub is_sles4sap {
-    return get_var('FLAVOR', '') =~ /SAP/;
+    return utils::is_sles4sap;
 }
 
 sub is_sles4sap_standard {
@@ -57,50 +57,7 @@ sub is_update_test_repo_test {
 
 sub cleanup_needles {
     remove_common_needles;
-    if ((get_var('VERSION', '') ne '12') && (get_var('BASE_VERSION', '') ne '12')) {
-        unregister_needle_tags("ENV-VERSION-12");
-    }
-
-    if ((get_var('VERSION', '') ne '12-SP1') && (get_var('BASE_VERSION', '') ne '12-SP1')) {
-        unregister_needle_tags("ENV-VERSION-12-SP1");
-    }
-
-    if ((get_var('VERSION', '') ne '12-SP2') && (get_var('BASE_VERSION', '') ne '12-SP2')) {
-        unregister_needle_tags("ENV-VERSION-12-SP2");
-    }
-
-    if ((get_var('VERSION', '') ne '12-SP3') && (get_var('BASE_VERSION', '') ne '12-SP3')) {
-        unregister_needle_tags("ENV-VERSION-12-SP3");
-    }
-
-    my $tounregister = sle_version_at_least('12-SP2') ? '0' : '1';
-    unregister_needle_tags("ENV-SP2ORLATER-$tounregister");
-
-    $tounregister = sle_version_at_least('12-SP3') ? '0' : '1';
-    unregister_needle_tags("ENV-SP3ORLATER-$tounregister");
-
-    if (!is_server) {
-        unregister_needle_tags("ENV-FLAVOR-Server-DVD");
-    }
-
-    if (!is_desktop) {
-        unregister_needle_tags("ENV-FLAVOR-Desktop-DVD");
-    }
-
-    if (!is_jeos) {
-        unregister_needle_tags('ENV-FLAVOR-JeOS-for-kvm');
-    }
-
-    if (!is_casp) {
-        unregister_needle_tags('ENV-DISTRI-CASP');
-    }
-
-    if (get_var('OFW')) {
-        unregister_needle_tags('ENV-OFW-0');
-    }
-    else {
-        unregister_needle_tags('ENV-OFW-1');
-    }
+    return utils::cleanup_sle_needles;
 }
 
 my $distri = testapi::get_var("CASEDIR") . '/lib/susedistribution.pm';
