@@ -7,6 +7,7 @@ use autotest;
 use utils;
 use strict;
 use warnings;
+use utils qw(unregister_needle_tags);
 
 our @EXPORT = qw(
   init_main

@@ -59,6 +59,7 @@ sub is_update_test_repo_test {
 }
 
 sub cleanup_needles {
+    print("in cleanup_needles\n");
     remove_common_needles;
     if (get_var('VERSION', '') ne '12') {
         unregister_needle_tags("ENV-VERSION-12");

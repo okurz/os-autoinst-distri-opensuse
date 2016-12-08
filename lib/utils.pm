@@ -926,10 +926,15 @@ sub register_needle_tags {
 sub unregister_needle_tags {
     my ($tag) = @_;
     my @a = @{needle::tags($tag)};
-    for my $n (@a) { $n->unregister(); }
+    my $found_needles = scalar @a;
+    print("unregister_needle_tags: found $found_needles with tag $tag\n");
+    for my $n (@a) {
+        $n->unregister();
+    }
 }
 
 sub reload_all_needles {
+    print("in reload_all_needles\n");
     for my $n (needle->all()) {
         $n->unregister();
     }
