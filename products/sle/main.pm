@@ -24,15 +24,18 @@ use main_common;
 init_main();
 
 sub is_server {
-    return utils::is_sle_server;
+    return is_sles4sap() || get_var('FLAVOR', '') =~ /^Server/;
 }
 
 sub is_desktop {
-    return utils::is_sle_desktop;
+    return get_var('FLAVOR', '') =~ /^Desktop/;
 }
 
 sub is_sles4sap {
     return utils::is_sles4sap;
+
+sub is_casp {
+    return check_var('DISTRI', 'casp');
 }
 
 sub is_sles4sap_standard {
@@ -57,7 +60,54 @@ sub is_update_test_repo_test {
 
 sub cleanup_needles {
     remove_common_needles;
-    return utils::cleanup_sle_needles;
+    if (get_var('VERSION', '') ne '12') {
+        unregister_needle_tags("ENV-VERSION-12");
+    }
+
+    if (get_var('VERSION', '') ne '12-SP1') {
+        unregister_needle_tags("ENV-VERSION-12-SP1");
+    }
+
+    if (get_var('VERSION', '') ne '12-SP2') {
+        unregister_needle_tags("ENV-VERSION-12-SP2");
+    }
+
+    if (get_var('VERSION', '') ne '12-SP3') {
+        unregister_needle_tags("ENV-VERSION-12-SP3");
+    }
+
+    my $tounregister = sle_version_at_least('12-SP2') ? '0' : '1';
+    unregister_needle_tags("ENV-SP2ORLATER-$tounregister");
+
+    $tounregister = sle_version_at_least('12-SP3') ? '0' : '1';
+    unregister_needle_tags("ENV-SP3ORLATER-$tounregister");
+
+    if (!is_server) {
+        unregister_needle_tags("ENV-FLAVOR-Server-DVD");
+    }
+
+    if (!is_desktop) {
+        unregister_needle_tags("ENV-FLAVOR-Desktop-DVD");
+    }
+
+    if (!is_jeos) {
+        unregister_needle_tags('ENV-FLAVOR-JeOS-for-kvm');
+    }
+
+    if (!is_casp) {
+        unregister_needle_tags('ENV-DISTRI-CASP');
+    }
+
+    if (!check_var("ARCH", "s390x")) {
+        unregister_needle_tags('ENV-ARCH-s390x');
+    }
+
+    if (get_var('OFW')) {
+        unregister_needle_tags('ENV-OFW-0');
+    }
+    else {
+        unregister_needle_tags('ENV-OFW-1');
+    }
 }
 
 my $distri = testapi::get_var("CASEDIR") . '/lib/susedistribution.pm';
@@ -1201,6 +1251,10 @@ elsif (get_var('HPC')) {
     }
 }
 else {
+    loadtest "old_version";
+    loadtest "switch_old_to_new";
+    loadtest "new_version";
+    return 1;
     if (get_var("AUTOYAST") || get_var("AUTOUPGRADE")) {
         if (get_var('PATCH')) {
             load_patching_tests();

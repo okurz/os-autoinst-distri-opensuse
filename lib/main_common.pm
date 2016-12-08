@@ -42,6 +42,8 @@ our @EXPORT = qw(
   maybe_load_kernel_tests
   load_extra_tests
   load_rollback_tests
+  remove_desktop_needles
+  remove_common_needles
 );
 
 sub init_main {
@@ -478,6 +480,35 @@ sub load_rollback_tests() {
     }
     if (get_var('MIGRATION_ROLLBACK')) {
         loadtest "online_migration/sle12_online_migration/snapper_rollback";
+    }
+}
+
+sub remove_desktop_needles {
+    my $desktop = shift;
+    if (!check_var("DESKTOP", $desktop) && !check_var("FULL_DESKTOP", $desktop)) {
+        unregister_needle_tags("ENV-DESKTOP-$desktop");
+    }
+}
+
+sub remove_common_needles {
+    my $no_skipto = get_var('SKIPTO') ? 0 : 1;
+    unregister_needle_tags("ENV-SKIPTO-$no_skipto");
+    remove_desktop_needles("lxde");
+    remove_desktop_needles("kde");
+    remove_desktop_needles("gnome");
+    remove_desktop_needles("xfce");
+    remove_desktop_needles("minimalx");
+    remove_desktop_needles("textmode");
+
+    if (!check_var("VIDEOMODE", "text")) {
+        unregister_needle_tags("ENV-VIDEOMODE-text");
+    }
+
+    if (get_var("INSTLANG") && get_var("INSTLANG") ne "en_US") {
+        unregister_needle_tags("ENV-INSTLANG-en_US");
+    }
+    else {    # english default
+        unregister_needle_tags("ENV-INSTLANG-de_DE");
     }
 }
 
