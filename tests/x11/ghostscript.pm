@@ -21,19 +21,9 @@ use testapi;
 use utils;
 
 sub run() {
-    select_console "x11";
-    x11_start_program "xterm";
-
-    # become root, disable packagekit and install all needed packages
-    become_root;
-    pkcon_quit;
-    zypper_call "in ghostscript ghostscript-x11";
-
-    # special case for gv which is not installed on all flavors
-    my $gv_missing = zypper_call("in gv", exitcode => [0, 104]);
-
-    # exit root shell
-    type_string "exit\n";
+    select_console 'x11';
+    ensure_installed 'ghostscript ghostscript-x11 gv';
+    x11_start_program 'xterm';
 
     my $gs_script = "ghostscript_ps2pdf.sh";
     my $gs_log    = "ghostscript.log";
@@ -56,8 +46,9 @@ sub run() {
     assert_script_run "test ! -f $gs_failed";
 
     # display one reference pdf on screen and check if it looks correct
-    # skip this when there is no gv installed
-    if (!$gv_missing) {
+    # skip this when there is no gv installed. Special case for gv which is
+    # not available on all flavors
+    if (!script_output 'rpm -q --quiet gv') {
         script_run "gv $reference", 0;
         assert_screen "ghostview_alphabet";
 

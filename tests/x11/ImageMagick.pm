@@ -30,16 +30,10 @@ use utils;
 
 
 sub run() {
-    select_console "x11";
-    x11_start_program "xterm";
-
-    become_root;
-    pkcon_quit;
-    zypper_call "in ImageMagick";
-    type_string "exit\n";
-
+    select_console 'x11';
+    ensure_installed 'ImageMagick';
+    x11_start_program 'xterm';
     assert_script_run "wget --quiet " . data_url('imagemagick/bg_script.sh') . " -O bg_script.sh";
-
     assert_script_run "chmod +x bg_script.sh";
     # execute the script and direct its exit code to the serial console
     type_string "./bg_script.sh " . data_url('imagemagick/bg_script.sh') . "; echo bg_script-\$? > /dev/$testapi::serialdev\n";
