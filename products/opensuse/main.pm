@@ -219,45 +219,32 @@ sub load_x11regresion_tests() {
     }
 }
 
-sub load_boot_tests() {
-    if (get_var("ISO_MAXSIZE")) {
-        loadtest "installation/isosize";
-    }
-    if (get_var("OFW")) {
-        loadtest "installation/bootloader_ofw";
-    }
-    elsif (get_var("UEFI") || is_jeos) {
-        # TODO: rename to bootloader_grub2
-        loadtest "installation/bootloader_uefi";
-    }
-    elsif (get_var("IPMI_HOSTNAME")) {    # abuse of variable for now
-        loadtest "installation/qa_net";
-    }
-    elsif (get_var("PXEBOOT")) {
-        set_var("DELAYED_START", "1");
-        loadtest "autoyast/pxe_boot";
-    }
-    elsif (check_var('ARCH', 's390x')) {
-        loadtest "installation/bootloader_s390";
-    }
-    else {
-        loadtest "installation/bootloader";
-    }
+sub load_boot_tests {
+    loadtest_if ISO_MAXSIZE => 'installation/isosize';
+    set_var('UEFI', 1) if (get_var("UEFI") || is_jeos);
+    my %boot_cond = (
+        OFW => 'installation/bootloader_ofw',
+        UEFI => 'installation/bootloader_uefi',
+        # abuse of variable for now
+        IPMI_HOSTNAME => 'installation/qa_net',
+        PXEBOOT => sub {
+            mutex_lock('pxe');
+            mutex_unlock('pxe');
+            loadtest "autoyast/pxe_boot";
+        },
+        _DEFAULT_ => 'installation/bootloader',
+    );
+    loadtest $boot_cond{bootloader};
 }
 
-sub load_inst_tests() {
+sub load_inst_tests {
     loadtest "installation/welcome";
-    if (check_var('ARCH', 's390x')) {
-        loadtest "installation/disk_activation";
-    }
-    if (get_var("MULTIPATH")) {
-        loadtest "installation/multipath";
-    }
+    loadtest_if MULTIPATH => 'installation/multipath',
     loadtest "installation/good_buttons";
     if (get_var('ENCRYPT_CANCEL_EXISTING') || get_var('ENCRYPT_ACTIVATE_EXISTING')) {
         loadtest "installation/encrypted_volume_activation";
     }
-    if (noupdatestep_is_applicable() && !get_var("LIVECD")) {
+    if (noupdatestep_is_applicable && !get_var("LIVECD")) {
         loadtest "installation/installation_mode";
     }
     if (!get_var("LIVECD") && get_var("UPGRADE")) {
@@ -267,10 +254,10 @@ sub load_inst_tests() {
         }
         loadtest "installation/upgrade_select_opensuse";
     }
-    if (noupdatestep_is_applicable() && get_var("LIVECD")) {
+    if (noupdatestep_is_applicable && get_var("LIVECD")) {
         loadtest "installation/livecd_network_settings";
     }
-    if (noupdatestep_is_applicable()) {
+    if (noupdatestep_is_applicable) {
         loadtest "installation/partitioning";
         if (defined(get_var("RAIDLEVEL"))) {
             loadtest "installation/partitioning_raid";
@@ -293,7 +280,7 @@ sub load_inst_tests() {
         loadtest "installation/partitioning_finish";
         loadtest "installation/installer_timezone";
     }
-    if (installwithaddonrepos_is_applicable() && !get_var("LIVECD")) {
+    if (installwithaddonrepos_is_applicable && !get_var("LIVECD")) {
         loadtest "installation/setup_online_repos";
     }
     if (!get_var("LIVECD") && get_var("ADDONURL")) {
