@@ -101,6 +101,10 @@ sub bootmenu_default_params {
     if (!get_var("NICEVIDEO") && !is_jeos) {
         type_string_very_slow "plymouth.ignore-serial-consoles ";    # make plymouth go graphical
         type_string_very_slow "linuxrc.log=$serialdev ";             # to get linuxrc logs in serial
+        if (check_var('UEFI', 1)) {
+            # change the line before typing video params
+            type_string " \\\n";
+        }
         type_string_very_slow "console=$serialdev ";                 # to get crash dumps as text
         type_string_very_slow "console=tty ";                        # to get crash dumps as text
 
