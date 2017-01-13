@@ -11,7 +11,7 @@ use utils 'ensure_unlocked_desktop';
 use testapi qw(send_key %cmd assert_screen check_screen check_var get_var save_screenshot
   match_has_tag set_var type_password type_string wait_idle wait_serial
   mouse_hide send_key_until_needlematch record_soft_failure
-  wait_still_screen wait_screen_change);
+  wait_still_screen assert_screen_change);
 
 
 sub handle_password_prompt {
@@ -132,7 +132,7 @@ sub x11_start_program($$$) {
     if ($options->{valid}) {
         for (1 .. 3) {
             last unless check_screen 'desktop-runner-border', 2;
-            wait_screen_change {
+            assert_screen_change {
                 send_key 'ret';
             };
         }

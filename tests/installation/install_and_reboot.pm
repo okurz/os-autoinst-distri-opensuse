@@ -143,7 +143,7 @@ sub run() {
         $self->save_upload_y2logs();
         select_console 'installation';
     }
-    wait_screen_change {
+    assert_screen_change {
         send_key 'alt-o';    # Reboot
     };
 

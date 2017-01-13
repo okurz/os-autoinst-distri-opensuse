@@ -31,9 +31,9 @@ sub run() {
     do {
         assert_screen \@tags;
         # kontact might ask to import data from another mailer, don't
-        wait_screen_change { send_key 'alt-n' } if match_has_tag('kontact-import-data-dialog');
+        assert_screen_change { send_key 'alt-n' } if match_has_tag('kontact-import-data-dialog');
         # KF5-based account assistant ignores alt-f4
-        wait_screen_change { send_key 'alt-c' } if match_has_tag('test-kontact-1');
+        assert_screen_change { send_key 'alt-c' } if match_has_tag('test-kontact-1');
     } until (match_has_tag('kontact-window'));
     send_key 'alt-f4';
 }

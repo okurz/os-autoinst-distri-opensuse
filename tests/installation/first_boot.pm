@@ -62,7 +62,7 @@ sub post_fail_hook() {
     my $self = shift;
 
     # Reveal what is behind Plymouth splash screen
-    wait_screen_change {
+    assert_screen_change {
         send_key 'esc';
     };
     # if we found a shell, we do not need the memory dump
