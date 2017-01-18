@@ -41,23 +41,19 @@ sub run() {
         # because after pressing return, the system is down
         prepare_system_reboot;
 
-        send_key "ret";
+        wait_screen_change { send_key 'ret' };
 
         # run only on qemu backend, e.g. svirt backend is fast enough to reboot properly
-        if (check_var('BACKEND', 'qemu')) {
-            my $delay = check_var('ARCH', 'x86_64') ? 5 : 10;
-            sleep $delay;    # wait to make authentication window disappear after successful authentication
-            if (check_screen 'reboot-auth', 2) {
-                record_soft_failure 'bsc#981299';
-                send_key_until_needlematch 'generic-desktop', 'esc', 7, 10;    # close timed out authentication window
-                if (check_var('DISTRI', 'sle') && !sle_version_at_least('12-SP2')) {
-                    # retrying does not help on SP1 - once it fails, it will always fail
-                    # so just keep it as soft failure
-                    return;
-                }
-                send_key_until_needlematch 'logoutdialog', 'ctrl-alt-delete', 7, 10;    # reboot
-                assert_and_click 'logoutdialog-reboot-highlighted';
+        if (check_var('BACKEND', 'qemu') && (check_screen 'reboot-auth', 0)) {
+            record_soft_failure 'bsc#981299';
+            send_key_until_needlematch 'generic-desktop', 'esc', 7, 10;    # close timed out authentication window
+            if (check_var('DISTRI', 'sle') && !sle_version_at_least('12-SP2')) {
+                # retrying does not help on SP1 - once it fails, it will always fail
+                # so just keep it as soft failure
+                return;
             }
+            send_key_until_needlematch 'logoutdialog', 'ctrl-alt-delete', 7, 10;    # reboot
+            assert_and_click 'logoutdialog-reboot-highlighted';
         }
     }
     workaround_type_encrypted_passphrase;
