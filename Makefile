@@ -67,8 +67,12 @@ test-merge:
 test-dry:
 	export PERL5LIB=${PERL5LIB_} ; tools/detect_code_dups
 
+.PHONY: test-license
+test-license:
+	tools/license
+
 .PHONY: test
-test: tidy test-compile test-merge test-dry
+test: tidy test-compile test-merge test-dry test-license
 
 PERLCRITIC=PERL5LIB=tools/lib/perlcritic:$$PERL5LIB perlcritic --quiet --gentle --include Perl::Critic::Policy::HashKeyQuote --include Perl::Critic::Policy::ConsistentQuoteLikeWords
 
