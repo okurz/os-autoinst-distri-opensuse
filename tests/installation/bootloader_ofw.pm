@@ -20,6 +20,7 @@ use testapi;
 use bootloader_setup;
 use registration;
 use utils;
+use bootloader_setup 'enable_dud';
 
 # hint: press shift-f10 trice for highest debug level
 sub run() {

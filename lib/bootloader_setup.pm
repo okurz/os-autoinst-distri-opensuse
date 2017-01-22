@@ -24,6 +24,7 @@ use mm_network;
 our @EXPORT = qw(
   stop_grub_timeout
   boot_local_disk
+  add_dud_params
   pre_bootmenu_setup
   select_bootmenu_option
   bootmenu_default_params
@@ -63,6 +64,18 @@ sub boot_local_disk {
         assert_screen 'boot-firmware';
     }
     send_key 'ret';
+}
+
+add_dud_params {
+    if (get_var("DUD")) {
+        my $dud = get_var("DUD");
+        if ($dud =~ /http:\/\/|https:\/\/|ftp:\/\//) {
+            return " dud=$dud insecure=1";
+        }
+        else {
+            return " dud=" . data_url($dud) . " insecure=1";
+        }
+    }
 }
 
 sub pre_bootmenu_setup {
@@ -300,24 +313,9 @@ sub specific_bootmenu_params {
         $args .= " kexec=1";
         record_soft_failure "boo#990374 - pass kexec to installer to use initrd from FTP";
     }
-
-    if (get_var("DUD")) {
-        my $dud = get_var("DUD");
-        if ($dud =~ /http:\/\/|https:\/\/|ftp:\/\//) {
-            $args .= " dud=$dud insecure=1";
-        }
-        else {
-            $args .= " dud=" . data_url($dud) . " insecure=1";
-        }
-    }
-
-    if (check_var('ARCH', 's390x')) {
-        return $args;
-    }
-    else {
-        type_string_very_slow $args;
-        save_screenshot;
-    }
+    $args .= add_dud_params;
+    type_string_very_slow $args;
+    save_screenshot;
 }
 
 sub select_bootmenu_video_mode {
