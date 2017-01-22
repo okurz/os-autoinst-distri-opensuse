@@ -527,8 +527,7 @@ sub setup_evolution_for_ews {
     wait_screen_change {
         send_key "alt-a";
     };
-    type_string "$mailbox";
-    sleep 1;
+    wait_screen_change { type_string "$mailbox" };
     save_screenshot();
 
     send_key "alt-o";
@@ -622,36 +621,27 @@ sub evolution_send_message {
 }
 
 sub pidgin_remove_account {
-    send_key "ctrl-a";
-    sleep 2;
-    send_key "right";
-    sleep 2;
-    send_key "ret";
-    sleep 2;
-    send_key "alt-d";
-    sleep 2;
-    send_key "alt-d";
+    wait_screen_change { send_key "ctrl-a" };
+    wait_screen_change { send_key "right" };
+    wait_screen_change { send_key "ret" };
+    wait_screen_change { send_key "alt-d" };
+    wait_screen_change { send_key "alt-d" };
 }
 
 sub tomboy_logout_and_login {
     wait_screen_change { send_key 'alt-f4' };
 
     # logout
-    send_key "alt-f2";
-    sleep 1;
+    wait_screen_change { send_key "alt-f2" };
     type_string "gnome-session-quit --logout --force\n";
-    sleep 20;
-    wait_idle;
+    wait_still_screen;
 
     # login
-    send_key "ret";
-    sleep 2;
+    wait_screen_change { send_key "ret" };
     wait_still_screen;
-    type_password();
-    sleep 2;
-    send_key "ret";
-    sleep 20;
-    wait_idle;
+    wait_screen_change { type_password() };
+    wait_screen_change { send_key "ret" };
+    assert_screen 'generic-desktop';
 
     # open start note again and take screenshot
     x11_start_program("tomboy note");
@@ -670,9 +660,9 @@ sub cleanup_gnote {
 
 sub gnote_start_with_new_note {
     x11_start_program("gnote");
-    assert_screen 'gnote-first-launched', 10;
+    assert_screen 'gnote-first-launched';
     send_key "ctrl-n";
-    assert_screen 'gnote-new-note', 5;
+    assert_screen 'gnote-new-note';
 }
 
 # Configure static ip for NetworkManager on SLED or SLE+WE
