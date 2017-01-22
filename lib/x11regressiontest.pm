@@ -679,5 +679,29 @@ sub configure_static_ip_nm {
     wait_screen_change { send_key 'alt-f4' };
 }
 
+sub tomboy_logout_and_login {
+    wait_screen_change { send_key 'alt-f4' };
+
+    # logout
+    send_key "alt-f2";
+    sleep 1;
+    type_string "gnome-session-quit --logout --force\n";
+    sleep 20;
+    wait_idle;
+
+    # login
+    send_key "ret";
+    sleep 2;
+    wait_still_screen;
+    type_password();
+    sleep 2;
+    send_key "ret";
+    sleep 20;
+    wait_idle;
+
+    # open start note again and take screenshot
+    x11_start_program("tomboy note");
+}
+
 1;
 # vim: set sw=4 et:
