@@ -369,8 +369,18 @@ sub wait_boot {
     mouse_hide();
 
     if (get_var("NOAUTOLOGIN") || get_var("XDMUSED")) {
-        assert_screen [qw(displaymanager emergency-shell emergency-mode)], $ready_time;
-        handle_emergency if (match_has_tag('emergency-shell') or match_has_tag('emergency-mode'));
+        my @tags = qw(displaymanager emergency-shell emergency-mode dirty_console_messages);
+        do {
+            assert_screen \@tags, $ready_time;
+            if (match_has_tag('emergency-shell') or match_has_tag('emergency-mode')) {
+                handle_emergency;
+                last;
+            }
+            if (match_has_tag('dirty_console_messages')) {
+                record_soft_failure 'TODO bug about dirty console messages, i.e. message showing up even though splash was enabled';
+                next;
+            }
+        } until (match_has_tag('displaymanager'));
 
         wait_idle;
         if (get_var('DM_NEEDS_USERNAME')) {
