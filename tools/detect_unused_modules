@@ -2,5 +2,6 @@
 
 for test in $(git ls-files "*tests/*.pm") ; do
     t=$(echo $test | sed -e 's@tests/.*/@@' -e 's@.pm@@')
-    git grep -q $t || echo $test
+    t_dir=$(echo $test | sed -e 's@tests/\(.*\)/.*$@\1@')
+    git grep -q "\($t\|load_testdir.*$t_dir\)" || echo $test
 done | grep -v 'qa_automation' && { exit 1; } || { exit 0; }
