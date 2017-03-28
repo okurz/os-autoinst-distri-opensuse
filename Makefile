@@ -68,7 +68,7 @@ test-dry:
 	export PERL5LIB=${PERL5LIB_} ; tools/detect_code_dups
 
 .PHONY: test
-test: tidy test-compile test-merge test-dry
+test: tidy test-compile test-merge test-dry test-unused-modules
 
 PERLCRITIC=PERL5LIB=tools/lib/perlcritic:$$PERL5LIB perlcritic --quiet --gentle --include Perl::Critic::Policy::HashKeyQuote --include Perl::Critic::Policy::ConsistentQuoteLikeWords
 
@@ -76,3 +76,6 @@ PERLCRITIC=PERL5LIB=tools/lib/perlcritic:$$PERL5LIB perlcritic --quiet --gentle 
 perlcritic: tools/lib/
 	${PERLCRITIC} .
 
+.PHONY: test-unused-modules
+test-unused-modules:
+	tools/detect_unused_modules
