@@ -18,15 +18,8 @@ use testapi;
 sub run() {
     # start akonadi server to avoid the self-test running when we launch kontact
     x11_start_program('akonadictl start');
-
-    # Workaround: sometimes the account assistant behind of mainwindow or tips window
-    # To disable it run at first time start
-    x11_start_program("echo \"[General]\" >> ~/.kde4/share/config/kmail2rc");
-    x11_start_program("echo \"first-start=false\" >> ~/.kde4/share/config/kmail2rc");
-    x11_start_program("echo \"[General]\" >> ~/.config/kmail2rc");
-    x11_start_program("echo \"first-start=false\" >> ~/.config/kmail2rc");
-
     x11_start_program('kontact');
+
     my @tags = qw(test-kontact-1 kontact-import-data-dialog kontact-window);
     do {
         assert_screen \@tags;
