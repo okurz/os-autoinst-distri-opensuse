@@ -322,9 +322,13 @@ sub workaround_type_encrypted_passphrase {
 # screen lock is necessary when switch back to x11
 # all possible options should be handled within loop to get unlocked desktop
 sub ensure_unlocked_desktop {
+    my ($initial_wait) = @_;
     my $counter = 10;
+    my $timeout = $initial_wait // 30;
     while ($counter--) {
-        assert_screen [qw(displaymanager displaymanager-password-prompt generic-desktop screenlock gnome-screenlock-password)], no_wait => 1;
+        assert_screen [qw(displaymanager displaymanager-password-prompt generic-desktop screenlock gnome-screenlock-password)], timeout => $timeout, no_wait => 1;
+        # reset timeout after initial waiting time for the next cycle
+        $timeout = 30;
         if (match_has_tag 'displaymanager') {
             if (check_var('DESKTOP', 'minimalx')) {
                 type_string "$username";
