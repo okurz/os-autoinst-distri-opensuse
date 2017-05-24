@@ -42,7 +42,7 @@ sub run() {
     # all but PPC64LE arch's vmlinux images are gzipped
     my $suffix = check_var('ARCH', 'ppc64le') ? '' : '.gz';
     my $crash_cmd = "echo exit | crash `ls -1t /var/crash/*/vmcore | head -n1` /boot/vmlinux-`uname -r`$suffix";
-    assert_script_run "$crash_cmd";
+    assert_script_run "$crash_cmd", 600;
     validate_script_output "$crash_cmd", sub { m/PANIC/ };
 }
 

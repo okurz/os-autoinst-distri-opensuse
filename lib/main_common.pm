@@ -447,60 +447,60 @@ sub load_extra_tests() {
     }
     else {
         loadtest "console/zypper_lr";
-        loadtest "console/openvswitch";
-        # dependency of git test
-        loadtest "console/sshd";
-        loadtest "console/zypper_ref";
-        loadtest "console/zypper_info";
-        loadtest "console/update_alternatives";
-        # start extra console tests from here
-        # Audio device is not supported on ppc64le, JeOS, and Xen PV
-        if (!get_var("OFW") && !is_jeos && !check_var('VIRSH_VMM_TYPE', 'linux')) {
-            loadtest "console/aplay";
-        }
-        if (get_var("FILESYSTEM", "btrfs") eq "btrfs") {
-            loadtest "console/btrfs_autocompletion";
-            if (get_var("NUMDISKS", 0) > 1) {
-                loadtest "console/btrfs_qgroups";
-                if (check_var('DISTRI', 'opensuse') || (check_var('DISTRI', 'sle') && sle_version_at_least('12-SP2'))) {
-                    loadtest 'console/snapper_cleanup';
-                }
-                if (check_var('DISTRI', 'sle') && sle_version_at_least('12-SP2')) {
-                    loadtest "console/btrfs_send_receive";
-                }
-            }
-        }
-        loadtest 'console/snapper_undochange';
-        loadtest 'console/snapper_create';
-        loadtest "console/command_not_found";
-        if (check_var('DISTRI', 'sle')) {
-            loadtest 'console/snapper_thin_lvm';
-            if (sle_version_at_least('12-SP2')) {
-                loadtest 'console/openssl_alpn';
-                loadtest 'console/autoyast_removed';
-            }
-        }
-        elsif (check_var('DISTRI', 'opensuse')) {
-            loadtest "console/rabbitmq";
-            loadtest "console/salt";
-            loadtest "console/rails";
-            loadtest "console/machinery";
-            loadtest "console/pcre";
-            loadtest "console/openqa_review";
-            loadtest "console/zbar";
-            loadtest "console/zypper_ar";
-            loadtest "console/a2ps";    # a2ps is not a ring package and thus not available in staging
-        }
-        loadtest "console/git";
-        loadtest "console/java";
-        loadtest "console/curl_ipv6";
-        loadtest "console/wget_ipv6";
-        loadtest "console/unzip";
-        loadtest "console/zypper_moo";
-        if (get_var("SYSAUTHTEST")) {
-            # sysauth test scenarios run in the console
-            loadtest "sysauth/sssd";
-        }
+        #loadtest "console/openvswitch";
+        ## dependency of git test
+        #loadtest "console/sshd";
+        #loadtest "console/zypper_ref";
+        #loadtest "console/zypper_info";
+        #loadtest "console/update_alternatives";
+        ## start extra console tests from here
+        ## Audio device is not supported on ppc64le, JeOS, and Xen PV
+        #if (!get_var("OFW") && !is_jeos && !check_var('VIRSH_VMM_TYPE', 'linux')) {
+        #    loadtest "console/aplay";
+        #}
+        #if (get_var("FILESYSTEM", "btrfs") eq "btrfs") {
+        #    loadtest "console/btrfs_autocompletion";
+        #    if (get_var("NUMDISKS", 0) > 1) {
+        #        loadtest "console/btrfs_qgroups";
+        #        if (check_var('DISTRI', 'opensuse') || (check_var('DISTRI', 'sle') && sle_version_at_least('12-SP2'))) {
+        #            loadtest 'console/snapper_cleanup';
+        #        }
+        #        if (check_var('DISTRI', 'sle') && sle_version_at_least('12-SP2')) {
+        #            loadtest "console/btrfs_send_receive";
+        #        }
+        #    }
+        #}
+        #loadtest 'console/snapper_undochange';
+        #loadtest 'console/snapper_create';
+        #loadtest "console/command_not_found";
+        #if (check_var('DISTRI', 'sle')) {
+        #    loadtest 'console/snapper_thin_lvm';
+        #    if (sle_version_at_least('12-SP2')) {
+        #        loadtest 'console/openssl_alpn';
+        #        loadtest 'console/autoyast_removed';
+        #    }
+        #}
+        #elsif (check_var('DISTRI', 'opensuse')) {
+        #    loadtest "console/rabbitmq";
+        #    loadtest "console/salt";
+        #    loadtest "console/rails";
+        #    loadtest "console/machinery";
+        #    loadtest "console/pcre";
+        #    loadtest "console/openqa_review";
+        #    loadtest "console/zbar";
+        #    loadtest "console/zypper_ar";
+        #    loadtest "console/a2ps";    # a2ps is not a ring package and thus not available in staging
+        #}
+        #loadtest "console/git";
+        #loadtest "console/java";
+        #loadtest "console/curl_ipv6";
+        #loadtest "console/wget_ipv6";
+        #loadtest "console/unzip";
+        #loadtest "console/zypper_moo";
+        #if (get_var("SYSAUTHTEST")) {
+        #    # sysauth test scenarios run in the console
+        #    loadtest "sysauth/sssd";
+        #}
         loadtest "console/kdump_and_crash";
         loadtest "console/consoletest_finish";
     }
