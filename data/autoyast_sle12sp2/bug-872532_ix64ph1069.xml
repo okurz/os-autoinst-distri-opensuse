@@ -799,7 +799,6 @@
       <package>libdconf1</package>
       <package>libgirepository-1_0-1</package>
       <package>libproxy1-config-gnome3</package>
-      <package>libpyglib-gi-2_0-python2-0</package>
       <package>openssh-askpass</package>
       <package>plymouth-dracut</package>
       <package>python-gobject</package>
