@@ -965,6 +965,7 @@ sub load_online_migration_tests() {
     if (check_var("MIGRATION_METHOD", 'zypper')) {
         loadtest "online_migration/sle12_online_migration/zypper_migration";
     }
+    loadtest "online_migration/sle12_online_migration/check_orphaned";
     loadtest "online_migration/sle12_online_migration/post_migration";
 }
 
