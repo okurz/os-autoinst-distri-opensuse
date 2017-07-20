@@ -452,42 +452,43 @@ sub load_extra_tests {
     loadtest "console/consoletest_setup";
     loadtest "console/hostname";
     if (any_desktop_is_applicable()) {
-        if (check_var('DISTRI', 'sle')) {
-            # start extra x11 tests from here
-            loadtest 'x11/vnc_two_passwords';
-            # TODO: check why this is not called on opensuse
-            loadtest 'x11/user_defined_snapshot';
-        }
-        elsif (check_var('DISTRI', 'opensuse')) {
-            if (gnomestep_is_applicable()) {
-                # Setup env for x11 regression tests
-                loadtest "x11regressions/x11regressions_setup";
-                # poo#18850 java test support for firefox, run firefox before chrome
-                # as otherwise have wizard on first run to import settings from it
-                loadtest "x11regressions/firefox/firefox_java";
-                if (check_var('VERSION', '42.2')) {
-                    # 42.2 feature - not even on Tumbleweed
-                    loadtest "x11/gdm_session_switch";
-                }
-                loadtest "x11/seahorse";
-            }
+        #if (check_var('DISTRI', 'sle')) {
+        #    # start extra x11 tests from here
+        #    loadtest 'x11/vnc_two_passwords';
+        #    # TODO: check why this is not called on opensuse
+        #    loadtest 'x11/user_defined_snapshot';
+        #}
+        #elsif (check_var('DISTRI', 'opensuse')) {
+        #    if (gnomestep_is_applicable()) {
+        #        # Setup env for x11 regression tests
+        #        loadtest "x11regressions/x11regressions_setup";
+        #        # poo#18850 java test support for firefox, run firefox before chrome
+        #        # as otherwise have wizard on first run to import settings from it
+        #        loadtest "x11regressions/firefox/firefox_java";
+        #        if (check_var('VERSION', '42.2')) {
+        #            # 42.2 feature - not even on Tumbleweed
+        #            loadtest "x11/gdm_session_switch";
+        #        }
+        #        loadtest "x11/seahorse";
+        #    }
 
-            if (chromestep_is_applicable()) {
-                loadtest "x11/chrome";
-            }
-            if (!get_var("NOAUTOLOGIN")) {
-                loadtest "x11/multi_users_dm";
-            }
+        #    if (chromestep_is_applicable()) {
+        #        loadtest "x11/chrome";
+        #    }
+        #    if (!get_var("NOAUTOLOGIN")) {
+        #        loadtest "x11/multi_users_dm";
+        #    }
 
-        }
+        #}
         # the following tests care about network and need some DE specific
         # needles. For now we only have them for gnome and do not want to
         # support more than just this DE. Probably for later at least the wifi
         # test, checking the wifi applet, would make sense in other DEs as
         # well
         if (check_var('DESKTOP', 'gnome')) {
-            loadtest 'x11/yast2_lan_restart';
-            loadtest 'x11/mac80211_hwsim';
+            #loadtest 'x11/yast2_lan_restart';
+            # loading mac80211_hwsim currently segfaults on SLE
+            loadtest 'x11/mac80211_hwsim' if check_var('DISTRI', 'opensuse');
         }
     }
     else {
