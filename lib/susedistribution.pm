@@ -460,6 +460,7 @@ sub init_consoles {
         $self->add_console('displaymanager', 'tty-console', {tty => 7});
         $self->add_console('x11', 'tty-console', {tty => get_x11_console_tty});
         $self->add_console('tunnel-console', 'tty-console', {tty => 3}) if get_var('TUNNELED');
+        $self->add_console('extra-console',  'tty-console', {tty => 3});
     }
 
     if (check_var('VIRSH_VMM_FAMILY', 'hyperv')) {
@@ -688,6 +689,7 @@ sub console_nr {
     $nr = get_root_console_tty if ($name eq 'root');
     $nr = 5 if ($name eq 'log');
     $nr = 3 if ($name eq 'tunnel');
+    $nr = 1 if ($name eq 'extra');
     return $nr;
 }
 

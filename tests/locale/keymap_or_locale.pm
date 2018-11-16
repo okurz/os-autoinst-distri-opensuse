@@ -26,8 +26,8 @@ sub run {
     my $keystrokes = $self->get_keystroke_list('us');
 
     assert_screen([qw(linux-login cleared-console)]);
-    return $self->verify_default_keymap_textmode_non_us($keystrokes, "${expected}_keymap") if ($expected ne 'us');
-    $self->verify_default_keymap_textmode($keystrokes, "${expected}_keymap");
+    return $self->verify_default_keymap_textmode_non_us($keystrokes, "${expected}_keymap", console => 'extra-console') if ($expected ne 'us');
+    $self->verify_default_keymap_textmode($keystrokes, "${expected}_keymap", console => 'extra-console');
     $self->verify_default_keymap_textmode($keystrokes, "${expected}_keymap", console => 'root-console');
     # ensure_serialdev_permissions is not needed as it is executing by system_prepare
     $self->verify_default_keymap_textmode($keystrokes, "${expected}_keymap", console => 'user-console');
