@@ -785,7 +785,7 @@ sub load_inst_tests {
     if (get_var('DUD_ADDONS') && is_sle('15+')) {
         loadtest "installation/dud_addon";
     }
-    loadtest "installation/welcome";
+    loadtest "installation/not_welcome";
     loadtest "installation/keyboard_selection" if get_var('INSTALL_KEYBOARD_LAYOUT');
     if (get_var('DUD_ADDONS') && is_sle('<15')) {
         loadtest "installation/dud_addon";
