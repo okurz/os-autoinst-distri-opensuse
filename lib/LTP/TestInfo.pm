@@ -21,6 +21,8 @@ use Exporter 'import';
 has 'runfile';
 has 'test';
 has test_result_export => sub { die 'Require test_result_export hashref'; };
+use strict;
+use testapi;
 
 sub testinfo {
     __PACKAGE__->new(test_result_export => shift @_, @_);

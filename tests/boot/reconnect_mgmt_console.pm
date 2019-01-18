@@ -15,6 +15,7 @@ use strict;
 use warnings;
 use base "installbasetest";
 use utils 'reconnect_mgmt_console';
+use testapi;
 
 sub run {
     reconnect_mgmt_console;

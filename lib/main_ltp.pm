@@ -26,8 +26,7 @@ use File::Basename 'basename';
 use main_common qw(load_bootloader_s390x boot_hdd_image get_ltp_tag load_boot_tests load_inst_tests load_reboot_tests);
 use 5.018;
 use Utils::Backends 'is_spvm';
-# FIXME: Delete the "## no critic (Strict)" line and uncomment "use warnings;"
-# use warnings;
+use warnings;
 
 our @EXPORT = qw(
   load_kernel_tests
