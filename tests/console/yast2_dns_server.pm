@@ -27,6 +27,10 @@ sub run {
     my $older_products = is_sle('<15') || is_leap('<15.1');
     $cmd{apply_changes} = $older_products ? "alt-a" : "alt-p";
     select_console 'root-console';
+    record_info 'debug 1123985', 'adding staging:G with potential fix';
+    zypper_call 'ar -CG http://download.suse.de/ibs/SUSE:/SLE-15-SP1:/GA:/Staging:/G/images/repo/SLE-15-SP1-Module-Basesystem-POOL-x86_64-Media1/ basesystem_staging_G';
+    zypper_call 'ref';
+    zypper_call 'dup';
     zypper_call 'in yast2-dns-server bind ' . $self->firewall, timeout => 180;
     # Pretend this is the 1st execution (could not be the case if yast2_cmdline was executed before)
     assert_script_run 'rm -f /var/lib/YaST2/dns_server';
