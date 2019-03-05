@@ -24,13 +24,13 @@ sub show_test_results {
 sub grep_output
 {
     my $pattern = $_[0];
-    open(FILE, "<$_[1]") or die $!;
-    while (my $LINE = <FILE>) {
+    open(my $fh, '<', "$_[1]") or die $!;
+    while (my $LINE = $fh) {
         if ($LINE =~ m/\b$pattern\b/) {
             return 0;
         }
     }
-    close(FILE);
+    close($fh);
     return 1;
 }
 sub start_3270_logging
@@ -48,10 +48,10 @@ sub start_3270_logging
 }
 sub filter_repeated
 {
-    open FILE, $_[0] or die $!;
+    open my $fh, '<', $_[0] or die $!;
     my $seen  = " ";
     my $count = 1;
-    while (my $line = <FILE>)
+    while (my $line = $fh)
     {
         my $flag = 1;
         if ($line eq $seen)
@@ -74,13 +74,13 @@ sub filter_repeated
             $flag = 0;
         }
     }
-    close(FILE);
+    close($fh);
 }
 sub reset_and_show_dmesg
 {
-    open FILE, ">temp" or die $!;
-    print FILE `dmesg -c`;
-    close(FILE);
+    open my $fh, '>', "temp" or die $!;
+    print $fh `dmesg -c`;
+    close($fh);
     &filter_repeated("temp", "<DMESG>|");
     unlink "temp";
 }
@@ -138,8 +138,8 @@ sub assert_fail
 sub isString {
     my $find = $_[0];
     my $file = $_[1];
-    open FILE, "<$file";
-    my @line = <FILE>;
+    open $fh, '<', "$file";
+    my @line = $fh;
     for (@line) {
         if ($_ =~ /$find/) {
             return 1;
