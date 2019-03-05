@@ -1330,6 +1330,7 @@ sub load_x11tests {
         if (!is_krypton_argon && !is_kde_live) {
             loadtest "x11/amarok";
         }
+        loadtest 'x11/krunner';
         loadtest "x11/kontact" unless is_kde_live;
     }
     if (kdestep_is_applicable()) {
