@@ -44,6 +44,7 @@ sub run {
 
     handle_login;
     assert_screen 'generic-desktop', 60;
+    $self->check_desktop_runner;
 
     # We're now in a wayland session, which is in a different VT
     x11_start_program('xterm');
