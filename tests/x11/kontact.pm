@@ -30,7 +30,7 @@ sub run {
     assert_script_run 'echo -e "[General]\nfirst-start=false" >> ~/.config/kmail2rc';
     select_console 'x11';
     my @tags = qw(test-kontact-1 kontact-import-data-dialog kontact-window);
-    x11_start_program('kontact', target_match => \@tags);
+    x11_start_program('env QT_LOGGING_RULES= kontact', target_match => \@tags);
     do {
         assert_screen \@tags;
         # kontact might ask to import data from another mailer, don't

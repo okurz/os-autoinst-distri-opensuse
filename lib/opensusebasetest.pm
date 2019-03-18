@@ -342,7 +342,7 @@ sub upload_xsession_errors_log {
       . "for file in \${xsefiles[@]}; do if [ -s \$file ]; then echo xsefile-valid > /dev/$serialdev; fi; done",
       0;
     if (wait_serial("xsefile-valid", 10)) {
-        $self->save_and_upload_log('cat /home/*/{.xsession-errors*,.local/share/sddm/*session.log}', '/tmp/XSE.log', {screenshot => 1});
+        $self->save_and_upload_log('cat /home/*/{.xsession-errors*,.local/share/sddm/*session.log}', '/tmp/XSE.log', {screenshot => 1, timeout => 600});
     }
 }
 

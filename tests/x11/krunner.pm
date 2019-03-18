@@ -22,13 +22,12 @@ sub run {
     assert_screen 'krunner-hello_world';
     send_key 'ret';
     # on wayland krunner sometimes vanishes or crashes, e.g. after the second
-    # typed character. Try to improve stability with all plugins (but
-    # commands) disabled
-    # TODO bugref
+    # typed character. Try enabling debugging
     if (get_var('WAYLAND')) {
-        select_console 'user-console';
-        assert_script_run 'curl ' . data_url('x11/krunnerrc_plugins_disabled') . ' > ~/.config/krunnerrc';
-        select_console 'x11';
+        x11_start_program 'xterm';
+        # the kde post_fail_hook will upload '*-session.log'
+        assert_script_run 'pkill -f krunner; (DISPLAY=:0 QT_LOGGING_RULES="*.debug=true" nohup krunner >& ~/.local/share/sddm/krunner-session.log &)';
+        send_key 'alt-f4';
     }
 }
 
