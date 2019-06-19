@@ -142,6 +142,18 @@ sub init_cmd {
     ## keyboard cmd vars end
 }
 
+=head2 init_desktop_runner
+
+  init_desktop_runner($program [, $timeout]);
+
+Try to open the desktop runner dialog and enter the C<$program> string to
+execute. The method waits for the desktop runner to show up for C<$timeout>
+seconds and will retry multiple times if it does not show up the first time.
+The method also applies workarounds to prevent loosing characters while
+typing.
+
+=cut
+
 sub init_desktop_runner {
     my ($program, $timeout) = @_;
     $timeout //= 30;
@@ -155,37 +167,22 @@ sub init_desktop_runner {
         send_key 'esc';    # To avoid failing needle on missing 'alt' key - poo#20608
         send_key_until_needlematch 'desktop-runner', $hotkey, 3, 10;
     }
-    for (my $retries = 10; $retries > 0; $retries--) {
-        # krunner may use auto-completion which sometimes gets confused by
-        # too fast typing or looses characters because of the load caused (also
-        # see below), especially in wayland.
-        # See https://progress.opensuse.org/issues/18200 as well as
-        # https://progress.opensuse.org/issues/35589
-        if (check_var('DESKTOP', 'kde')) {
-            if (get_var('WAYLAND')) {
-                wait_still_screen(3);
-                type_string_very_slow substr $program, 0, 2;
-                wait_still_screen(3);
-                type_string_very_slow substr $program, 2;
-            } else {
-                type_string_slow $program;
-            }
+    # krunner may use auto-completion which sometimes gets confused by
+    # too fast typing or looses characters because of the load caused (also
+    # see below), especially in wayland.
+    # See https://progress.opensuse.org/issues/18200 as well as
+    # https://progress.opensuse.org/issues/35589
+    if (check_var('DESKTOP', 'kde')) {
+        if (get_var('WAYLAND')) {
+            wait_still_screen(3);
+            type_string_very_slow substr $program, 0, 2;
+            wait_still_screen(3);
+            type_string_very_slow substr $program, 2;
         } else {
-            type_string $program;
+            type_string_slow $program;
         }
-        # Do multiple attempts only on plasma
-        last unless (check_var('DESKTOP', 'kde'));
-        # Make sure we have plasma suggestions as it may take time, especially on boot or under load. Otherwise, try again
-        if ($retries == 1) {
-            assert_screen('desktop-runner-plasma-suggestions', $timeout);
-        } elsif (!check_screen('desktop-runner-plasma-suggestions', $timeout)) {
-            # Prepare for next attempt
-            send_key 'esc';    # Escape from desktop-runner
-            sleep(5);          # Leave some time for the system to recover
-            send_key_until_needlematch 'desktop-runner', $hotkey, 3, 10;
-        } else {
-            last;
-        }
+    } else {
+        type_string $program;
     }
 }
 
@@ -219,9 +216,9 @@ tests.
 In case of KDE plasma krunner provides a suggestion list which can take a bit
 of time to be computed therefore the logic is slightly different there, for
 example longer waiting time, looking for the computed suggestions list before
-accepting and a default timeout for the target match of 90 seconds versus just
-using the default of C<assert_screen> itself. For other desktop environments
-we keep the old check for the runner border.
+accepting with multiple retries and a default timeout for the target match of
+90 seconds versus just using the default of C<assert_screen> itself. For other
+desktop environments we keep the old check for the runner border.
 
 This method is overwriting the base method in os-autoinst.
 
@@ -252,6 +249,16 @@ sub x11_start_program {
     wait_still_screen(3, similarity_level => 45) unless ($args{no_wait} || ($args{valid} && $args{target_match} && !check_var('DESKTOP', 'kde')));
     return unless $args{valid};
     set_var('IN_X11_START_PROGRAM', $program);
+    # Do multiple attempts only on plasma
+    if (check_var('DESKTOP', 'kde')) {
+        for (my $retries = 10; $retries > 0; $retries--) {
+            last if check_screen('desktop-runner-plasma-suggestions', $timeout);
+            # Prepare for next attempt on no match
+            send_key 'esc';    # Escape from desktop-runner
+            sleep 5;  # give some time to settle
+            init_desktop_runner($program, $timeout);
+        }
+    }
     my @target = ref $args{target_match} eq 'ARRAY' ? @{$args{target_match}} : $args{target_match};
     for (1 .. 3) {
         push @target, check_var('DESKTOP', 'kde') ? 'desktop-runner-plasma-suggestions' : 'desktop-runner-border';
