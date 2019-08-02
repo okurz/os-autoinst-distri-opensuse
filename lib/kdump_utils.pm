@@ -68,11 +68,7 @@ sub prepare_for_kdump {
     zypper_call('in yast2-kdump kdump crash');
 
     # add debuginfo channels
-    if (check_var('DISTRI', 'sle')) {
-        prepare_for_kdump_sle;
-        return;
-    }
-
+    return prepare_for_kdump_sle if check_var('DISTRI', 'sle');
     if (my $snapshot_debuginfo_repo = get_var('REPO_OSS_DEBUGINFO')) {
         zypper_call('ar -f ' . get_var('MIRROR_HTTP') . "-debuginfo $snapshot_debuginfo_repo");
         install_kernel_debuginfo;
