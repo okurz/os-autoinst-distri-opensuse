@@ -104,6 +104,8 @@ sub run {
     # stuck in linuxrc asking if dhcp should be used"
     push @welcome_tags, 'linuxrc-dhcp-question';
     ensure_fullscreen;
+    save_memory_dump;
+    die "fail here, try to reproduce bug";
 
     # Process expected pop-up windows and exit when welcome/beta_war is shown or too many iterations
     while ($iterations++ < scalar(@welcome_tags)) {

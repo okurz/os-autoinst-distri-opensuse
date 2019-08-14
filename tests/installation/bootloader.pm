@@ -75,4 +75,8 @@ sub run {
     compare_bootparams(\@params, [parse_bootparams_in_serial]) if !is_livecd;
 }
 
+sub test_flags {
+    return {fatal => 1, milestone => 1};
+}
+
 1;

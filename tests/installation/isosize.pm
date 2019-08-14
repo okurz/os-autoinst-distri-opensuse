@@ -17,6 +17,9 @@ use warnings;
 use testapi;
 
 sub run {
+    save_memory_dump;
+    die "here";
+
     my $self   = shift;
     my $iso    = get_var("ISO") || get_var('HDD_1');
     my $size   = $iso ? -s $iso : 0;
@@ -38,5 +41,7 @@ sub run {
 
     $self->result($result);
 }
+
+sub post_fail_hook {}
 
 1;
