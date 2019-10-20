@@ -1,5 +1,7 @@
 services: docker
 language: perl
+git:
+  depth: 3
 matrix:
   include:
   - name: "openSUSE/SUSE production perl version, only compile check"
@@ -12,6 +14,7 @@ matrix:
     perl: "5.26"
     env: TESTS=unit
   - name: "isotovideo smoke test"
+    perl: "5.26"
     env: TESTS=isotovideo
 env:
   global:
