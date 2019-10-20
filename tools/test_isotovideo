@@ -1,0 +1,6 @@
+#!/bin/sh -e
+cre="${cre:-"podman"}"
+out="${out:-$(mktemp)}"
+
+$cre run --pull=always --rm -it -v .:/opt/tests --entrypoint '' registry.opensuse.org/home/okurz/container/containers/tumbleweed:isotovideo sh -c "zypper -n in os-autoinst-distri-opensuse-deps && isotovideo -d casedir=/opt/tests productdir=products/opensuse/ _exit_after_schedule=1" |& tee $out
+diff <(sed -n 's/^.*scheduling \w* //p' $out) t/data/test_schedule.out

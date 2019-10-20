@@ -116,6 +116,8 @@ else ifeq ($(TESTS),static)
 test: test-static
 else ifeq ($(TESTS),unit)
 test: unit-test perlcritic
+else ifeq ($(TESTS),isotovideo)
+test: test-isotovideo
 else
 test: unit-test test-static test-compile perlcritic
 endif
@@ -152,3 +154,7 @@ test-invalid-syntax:
 .PHONY: test-code-style
 test-code-style:
 	tools/check_code_style
+
+.PHONY: test-isotovideo
+test-isotovideo:
+	tools/test_isotovideo
