@@ -24,12 +24,9 @@ cache:
     - $HOME/perl5
 before_install:
   - eval $(curl https://travis-perl.github.io/init) --perl --always-upgrade-modules
-  - echo "requires 'Code::DRY';" >> cpanfile
-  - echo "requires 'Perl::Tidy', '== 20190915';" >> cpanfile
 install:
   - make prepare
 script:
-  - git checkout cpanfile
   - source script/generateLibDocs.sh
   - make test
 deploy:
