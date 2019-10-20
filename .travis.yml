@@ -28,8 +28,6 @@ addons:
 cache:
   directories:
     - $HOME/perl5
-before_install:
-  - eval $(curl https://travis-perl.github.io/init) --perl --always-upgrade-modules
 install:
   - make prepare
 script:
