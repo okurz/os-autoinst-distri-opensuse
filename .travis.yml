@@ -33,12 +33,11 @@ script:
   - source script/generateLibDocs.sh
   - make test
 deploy:
-    provider: pages
-    skip_cleanup: true
-    github_token: $GITHUB_TOKEN
-    local-dir: $TRAVIS_BUILD_DIR/docs/
-    on:
-        branch: master
-        condition: "$NEW_DEPLOY_NEEDED = 1 && $TESTS = unit"
-    target_branch: gh-pages
-
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local-dir: $TRAVIS_BUILD_DIR/docs/
+  on:
+    branch: master
+    condition: "$NEW_DEPLOY_NEEDED = 1 && $TESTS = unit"
+  target_branch: gh-pages
