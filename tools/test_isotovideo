@@ -1,0 +1,3 @@
+#!/bin/bash -e
+os-autoinst/isotovideo -d casedir=. productdir=products/opensuse/ _exit_after_schedule=1 |& tee autoinst-log.txt
+diff <(sed -n 's/^.*scheduling \w* //p' autoinst-log.txt) t/data/test_schedule.out

@@ -1,3 +1,4 @@
+services: docker
 language: perl
 matrix:
   include:
@@ -10,6 +11,8 @@ matrix:
   - name: "testing perl version, unit tests"
     perl: "5.26"
     env: TESTS=unit
+  - name: "isotovideo smoke test"
+    env: TESTS=isotovideo
 env:
   global:
     - COMMIT_AUTHOR_EMAIL=skynet@open.qa

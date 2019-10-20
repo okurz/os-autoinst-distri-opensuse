@@ -102,6 +102,8 @@ else ifeq ($(TESTS),static)
 test: test-static
 else ifeq ($(TESTS),unit)
 test: unit-test perlcritic
+else ifeq ($(TESTS),isotovideo)
+test: test-isotovideo
 else
 test: unit-test test-static test-compile perlcritic
 endif
@@ -123,3 +125,7 @@ test-soft_failure-no-reference:
 .PHONY: test-invalid-syntax
 test-invalid-syntax:
 	tools/check_invalid_syntax
+
+.PHONY: test-isotovideo
+test-isotovideo: os-autoinst/
+	tools/test_isotovideo
