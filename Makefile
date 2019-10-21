@@ -11,8 +11,8 @@ help:
 prepare:
 	git clone --depth 3 git://github.com/os-autoinst/os-autoinst
 	$(MAKE) check-links
-	cd os-autoinst && cpanm -n --installdeps .
-	cpanm -n --installdeps .
+	cd os-autoinst && cpanm -v --installdeps .
+	cpanm -v --installdeps .
 
 os-autoinst/:
 	@test -d os-autoinst || (echo "Missing test requirements, \
@@ -128,4 +128,8 @@ test-invalid-syntax:
 
 .PHONY: test-isotovideo
 test-isotovideo: os-autoinst/
-	tools/test_isotovideo
+	env
+	env | grep PERLBREW_PERL
+	echo "$${PERLBREW_PERL+foo}"
+	(cd os-autoinst && cpanm -v --installdeps .)
+	PERL5LIB="$${PERLBREW_PERL+$${HOME}/perl$${PERLBREW_PERL}/lib/perl5$${PERL5LIB+:}}$${PERL5LIB}" tools/test_isotovideo
