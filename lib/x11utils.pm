@@ -347,7 +347,7 @@ Also handle workarounds when needed.
 =cut
 sub handle_welcome_screen {
     my (%args) = @_;
-    assert_screen([qw(opensuse-welcome opensuse-welcome-boo1170586)], $args{timeout});
+    assert_screen([qw(opensuse-welcome opensuse-welcome-boo1170586)], $args{timeout}) unless match_has_tag('opensuse-welcome');
     workaround_boo1170586 if match_has_tag("opensuse-welcome-boo1170586");
     untick_welcome_on_next_startup;
 }
