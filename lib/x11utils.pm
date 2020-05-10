@@ -310,12 +310,13 @@ untick welcome page on next startup.
 =cut
 sub untick_welcome_on_next_startup {
     # Untick box - (Retries may be needed: poo#56024)
+    wait_screen_change { click_lastmatch } if match_has_tag('opensuse-welcome-show-on-boot');
     for my $retry (1 .. 5) {
-        assert_and_click_until_screen_change("opensuse-welcome-show-on-boot", 5, 5);
         # Moving the cursor already causes screen changes - do not fail the check
         # immediately but allow some time to reach the final state
         last                                          if check_screen("opensuse-welcome-show-on-boot-unselected", timeout => 5);
         die "Unable to untick 'Show on next startup'" if $retry == 5;
+        assert_and_click_until_screen_change('opensuse-welcome-show-on-boot', 5, 5);
     }
     for my $retry (1 .. 5) {
         send_key 'alt-f4';
