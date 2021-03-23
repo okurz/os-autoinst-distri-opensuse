@@ -10,12 +10,15 @@ jobs:
     steps:
     - name: Trigger openQA test
       # see https://stackoverflow.com/a/58034787 regarding the repo and branch variables
+      # hdd variable needs to be updated when old images are pruned
       run: |
         curl -u $${{ secrets.OPENQA_O3_USER_KEY_SECRET }} -X POST \
-          https://openqa.opensuse.org/api/v1/jobs ARCH=x86_64 FLAVOR=test VERSION=Tumbleweed MACHINE=64bit \
-          TEST=okurz_hackweek_20_0ad \
-          ISOTOVIDEO="podman run --pull=always --rm -it registry.opensuse.org/devel/openqa/testgithub/opr-1558/containers/isotovideo:qemu-x86 /usr/bin/isotovideo -d" \
-          CASEDIR=https://github.com/${{ github.repository }}#${GITHUB_REF#refs/heads/} \
-          `# hdd needs to be updated when old images are pruned` \
-          HDD_1=opensuse-Tumbleweed-x86_64-20210320-Tumbleweed@64bit.qcow2 \
-          SCHEDULE=tests,boot/boot_to_desktop,tests/games/0ad
+          -H "Content-Type: application/json" \
+          -d '{"ARCH": "x86_64", "FLAVOR": "test", "VERSION": "Tumbleweed", "MACHINE": "64bit", \
+            "TEST": "okurz_hackweek_20_0ad", \
+            "ISOTOVIDEO": "podman run --pull=always --rm -it registry.opensuse.org/devel/openqa/testgithub/opr-1558/containers/isotovideo:qemu-x86 /usr/bin/isotovideo -d", \
+            "CASEDIR": "https://github.com/${{ github.repository }}#${GITHUB_REF#refs/heads/}", \
+            "HDD_1": "opensuse-Tumbleweed-x86_64-20210320-Tumbleweed@64bit.qcow2", \
+            "SCHEDULE": "tests,boot/boot_to_desktop,tests/games/0ad" \
+            }' \
+          https://openqa.opensuse.org/api/v1/jobs 
