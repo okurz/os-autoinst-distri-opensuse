@@ -1,0 +1,13 @@
+name: ci
+# yamllint disable-line rule:truthy
+on: [push, pull_request]
+jobs:
+  openqa:
+    runs-on: ubuntu-latest
+    name: "Trigger an openQA test with custom new test together with a custom os-autoinst backend"
+    container:
+      image: curlimages/curl
+    steps:
+    - name: Trigger openQA test
+      run: |
+        curl -u $${{ secrets.OPENQA_O3_USER_KEY_SECRET }} -X POST https://openqa.opensuse.org/api/v1/jobs ARCH=x86_64 FLAVOR=test VERSION=Tumbleweed MACHINE=64bit TEST=okurz_hackweek_20_0ad ISOTOVIDEO="podman run --pull=always --rm -it registry.opensuse.org/devel/openqa/testgithub/opr-1558/containers/isotovideo:qemu-x86 /usr/bin/isotovideo -d" CASEDIR=https://github.com/${{ github.repository }}#${GITHUB_REF#refs/heads/}
