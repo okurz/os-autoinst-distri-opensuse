@@ -13,5 +13,5 @@ jobs:
       # hdd variable needs to be updated when old images are pruned
       run: |
         curl -u ${{ secrets.OPENQA_O3_USER_KEY_SECRET }} \
-          -d 'arch=x86_64&flavor=test&version=Tumbleweed&machine=64bit&test=okurz_hackweek_20_0ad&isotovideo="podman run --pull=always --rm -it registry.opensuse.org/devel/openqa/testgithub/opr-1558/containers/isotovideo:qemu-x86 /usr/bin/isotovideo -d"&casedir=https://github.com/${{ github.repository }}#${GITHUB_REF#refs/heads/}&hdd_1=opensuse-Tumbleweed-x86_64-20210320-Tumbleweed@64bit.qcow2&schedule="tests/boot/boot_to_desktop,tests/games/0ad" \
+          -d 'arch=x86_64&flavor=test&version=Tumbleweed&machine=64bit&test=okurz_hackweek_20_0ad&isotovideo="podman run --pull=always --rm -it registry.opensuse.org/devel/openqa/testgithub/opr-1558/containers/isotovideo:qemu-x86 /usr/bin/isotovideo -d"&casedir=https://github.com/${{ github.repository }}#${GITHUB_REF#refs/heads/}&hdd_1=opensuse-Tumbleweed-x86_64-20210320-Tumbleweed@64bit.qcow2&schedule="tests/boot/boot_to_desktop,tests/games/0ad"' \
           https://openqa.opensuse.org/api/v1/jobs 
