@@ -1,4 +1,4 @@
-name: ci
+name: openqa
 # yamllint disable-line rule:truthy
 on: [push, pull_request]
 jobs:
