@@ -17,7 +17,7 @@ use testapi;
 
 sub run {
     select_console 'x11';
-    ensure_installed 'simutrans';
+    ensure_installed ' --recommends simutrans';
     x11_start_program 'simutrans';
 }
 
