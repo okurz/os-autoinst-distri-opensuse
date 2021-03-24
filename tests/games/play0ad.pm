@@ -7,7 +7,6 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# Package: 0ad
 # Summary: Startup and basics of the game 0ad
 # Maintainer: Oliver Kurz <okurz@suse.de>
 
@@ -17,9 +16,11 @@ use warnings;
 use testapi;
 
 sub run {
-    select_console('x11');
-    ensure_installed('0ad');
-    x11_start_program('0ad');
+    select_console 'root-console';
+    assert_script_run 'zypper ar -p 105 https://download.opensuse.org/repositories/games/openSUSE_Tumbleweed/games.repo';
+    assert_script_run 'zypper -n in 0ad';
+    select_console 'x11';
+    x11_start_program '0ad';
 }
 
 1;
