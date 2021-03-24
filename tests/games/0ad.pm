@@ -17,9 +17,9 @@ use warnings;
 use testapi;
 
 sub run {
-    select_console 'x11';
-    ensure_installed '0ad';
-    x11_start_program '0ad';
+    select_console('x11');
+    ensure_installed('0ad');
+    x11_start_program('0ad');
 }
 
 1;
