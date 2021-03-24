@@ -17,7 +17,7 @@ use testapi;
 
 sub run {
     select_console 'root-console';
-    assert_script_run 'zypper ar -p 105 https://download.opensuse.org/repositories/games/openSUSE_Tumbleweed/games.repo';
+    assert_script_run 'zypper --gpg-auto-import-keys ar -p 105 https://download.opensuse.org/repositories/games/openSUSE_Tumbleweed/games.repo';
     assert_script_run 'zypper -n in 0ad';
     select_console 'x11';
     x11_start_program '0ad';
