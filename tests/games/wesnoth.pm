@@ -10,6 +10,7 @@
 # Summary: Startup and basics of the game wesnoth
 # Maintainer: Oliver Kurz <okurz@suse.de>
 
+use Inline Python
 use base 'x11test';
 use strict;
 use warnings;
