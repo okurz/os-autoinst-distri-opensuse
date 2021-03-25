@@ -15,5 +15,5 @@ jobs:
       #    -d "arch=x86_64&flavor=test&version=Tumbleweed&machine=64bit&test=okurz_hackweek_20_wesnoth&casedir=https://github.com/${{ github.repository }}#${GITHUB_REF#refs/heads/}&enable_relative_path=1&distri=opensuse&desktop=gnome&hdd_1=opensuse-Tumbleweed-x86_64-20210320-Tumbleweed@64bit.qcow2&schedule=tests/boot/boot_to_desktop,tests/games/wesnoth"
       run: |
         curl -u ${{ secrets.OPENQA_O3_USER_KEY_SECRET }} \
-          -d "arch=x86_64&flavor=test&version=Tumbleweed&machine=64bit&test=okurz_hackweek_20_wesnoth&casedir=https://github.com/${{ github.repository }}#${GITHUB_REF#refs/heads/}&enable_relative_path=1&distri=opensuse&desktop=gnome&hdd_1=opensuse-Tumbleweed-x86_64-20210320-Tumbleweed@64bit.qcow2&schedule=tests/boot/boot_to_desktop,tests/games/wesnoth_python"
+          -d "arch=x86_64&flavor=test&version=Tumbleweed&machine=64bit&test=okurz_hackweek_20_wesnoth&casedir=https://github.com/${{ github.repository }}#${GITHUB_REF#refs/heads/}&enable_relative_path=1&distri=opensuse&desktop=gnome&hdd_1=opensuse-Tumbleweed-x86_64-20210320-Tumbleweed@64bit.qcow2&schedule=tests/boot/boot_to_desktop,tests/games/wesnoth_python" \
           https://openqa.opensuse.org/api/v1/jobs 
