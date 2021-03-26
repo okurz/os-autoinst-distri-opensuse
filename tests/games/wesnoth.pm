@@ -19,6 +19,7 @@ sub run {
     select_console 'x11';
     ensure_installed 'wesnoth';
     x11_start_program 'wesnoth';
+    
     send_key 'alt-f4';
 }
 
