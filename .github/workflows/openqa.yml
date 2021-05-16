@@ -1,0 +1,21 @@
+name: openqa
+# yamllint disable-line rule:truthy
+on: [push, pull_request]
+jobs:
+  openqa:
+    runs-on: ubuntu-latest
+    name: "Trigger an openQA test with a default scenario"
+    container:
+      image: registry.opensuse.org/home/okurz/container/openqa-mon/containers/tumbleweed:curl-openqa-mon
+    steps:
+    - name: Trigger openQA test
+      # see https://stackoverflow.com/a/58034787 regarding the repo and branch variables
+      run: |
+        curl -s -u ${{ secrets.OPENQA_O3_USER_KEY_SECRET }} -o out \
+          -d "arch=x86_64&flavor=test&version=Tumbleweed&machine=64bit&test=user_test&casedir=https://github.com/${{ github.repository }}#${GITHUB_REF#refs/heads/}&distri=opensuse&desktop=gnome" \
+          https://openqa.opensuse.org/api/v1/jobs
+        job_id=$(cat out | jq .id)
+        echo "openQA job id: $job_id"
+        job_url="https://openqa.opensuse.org/tests/$job_id"
+        echo "Triggered openQA job $job_url"
+        openqa-mon -f -m -n -c 10 -e "$job_url"
