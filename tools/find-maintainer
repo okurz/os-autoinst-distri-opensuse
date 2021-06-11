@@ -1,0 +1,35 @@
+#!/bin/bash
+set -euo pipefail
+
+usage() {
+    cat << EOF
+Usage: find-maintainer TEST_MODULE_PATH
+Find the maintainer of a specified test module
+
+Options:
+ -h, --help         display this help
+EOF
+    exit "$1"
+}
+
+opts=$(getopt -o h --long help -n 'parse-options' -- "$@") || usage 1
+eval set -- "$opts"
+while true; do
+  case "$1" in
+    -h | --help ) usage 0; shift ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
+declare -A maintainer
+
+read_maintainer_into_dictionary() {
+    while IFS=':' read -r f _ m; do
+        maintainer[${f%%:*}]=$m
+    done < <(git grep '^# Maintainer:')
+}
+
+read_maintainer_into_dictionary
+
+echo "all: ${#maintainer[*]} files; ${maintainer[*]}; keys: ${!maintainer[*]}"
