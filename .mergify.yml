@@ -1,33 +1,38 @@
 pull_request_rules:
-  - name: automatic merge
-    conditions:
-      - "#approved-reviews-by>=2"
-      - "#changes-requested-reviews-by=0"
-      # https://doc.mergify.io/examples.html#require-all-requested-reviews-to-be-approved
-      - "#review-requested=0"
-      - -label~=^acceptance-tests-needed|not-ready
-      - base=master
-      - "status-success~=static tests.*"
-      - "status-success~=unit tests.*"
-      - "status-success~=compile tests.*"
-      # prevent to merge pull requests that still have the template
-      # placeholder included
-      #- -"body~=REMOVE THIS LINE"
-      - "body~=Verification run: http"
-    actions:
-      merge:
-        method: merge
   - name: automatic merge on special label
     conditions:
-      - -label~=^acceptance-tests-needed|not-ready
-      - "label=merge-fast"
-      - base=master
-      - "status-success~=static tests.*"
-      - "status-success~=unit tests.*"
-      - "status-success~=compile tests.*"
-    actions:
+      - and: &base_checks
+        - -label~=^acceptance-tests-needed|not-ready
+        - base=master
+        - "check-success~=static tests.*"
+        - "check-success~=unit tests.*"
+        - "check-success~=compile tests.*"
+        - "check-success~=isotovideo test"
+        - "#check-failure=0"
+        - "#check-pending=0"
+        # prevent to merge pull requests that still have the template
+        # placeholder included
+        #- -"body~=REMOVE THIS LINE"
+        - -body~=PLACEHOLDER
+        - "body~=Verification run: http"
+      - and:
+        - "label=merge-fast"
+        # mergify needs each "and" with at least two entries so duplicating
+        # this entry here to fool the mergify config check
+        - linear-history
+    actions: &merge
       merge:
         method: merge
+  - name: automatic merge
+    conditions:
+      - and: *base_checks
+      - and:
+        - linear-history
+        - "#approved-reviews-by>=0"
+        - "#changes-requested-reviews-by=0"
+        # https://doc.mergify.io/examples.html#require-all-requested-reviews-to-be-approved
+        - "#review-requested=0"
+    actions: *merge
   - name: ask to resolve conflict
     conditions:
       - conflict
