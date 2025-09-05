@@ -12,6 +12,7 @@ use testapi;
 use utils;
 
 sub run {
+    die 'fail early';
     select_console 'root-console';
     zypper_call "in a2ps";
     assert_script_run("curl https://www.suse.com > /tmp/suse.html");
