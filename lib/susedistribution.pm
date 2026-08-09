@@ -948,6 +948,8 @@ sub activate_console {
         set_sshserial_dev if has_serial_over_ssh;    # We can use ssh console with a real serial already grabbed
     }
     elsif ($console eq 'svirt' || $console eq 'hyperv-intermediary') {
+        return unless $args{await_console};
+
         my $os_type = (check_var('VIRSH_VMM_FAMILY', 'hyperv') && $console eq 'svirt') ? 'windows' : 'linux';
         handle_password_prompt($console);
         assert_screen('text-logged-in-root', 60) unless is_hyperv;
