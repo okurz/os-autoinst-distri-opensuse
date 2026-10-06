@@ -22,6 +22,14 @@ sub run {
     }
 
     select_serial_terminal;
+    if (get_var('INJECT_SSH_DISCONNECT')) {
+        record_info('Inject Disconnect', 'Triggering fatal SSH serial disconnect via hypervisor');
+        select_console('svirt');
+        enter_cmd 'sh -c "(sleep 3 && kill -9 \$(ps -o ppid= -p \$(pgrep -f \"virsh console openQA-SUT\"))) &"';
+        select_serial_terminal;
+        wait_serial('WAITING_FOR_DISCONNECT_TO_TRIGGER', 120);
+        return;
+    }
     if (script_run('which SUSEConnect') == 0) {
         # Retry to address transient network jitter or SCC response latency
         my $exit_code = script_retry(
