@@ -99,6 +99,10 @@ test-metadata:
 test-metadata-changed:
 	tools/check_metadata $$(git diff --name-only | grep 'tests.*pm')
 
+.PHONY: test-commit-message
+test-commit-message:
+	gitlint --commits origin/master..HEAD
+
 .PHONY: test-merge
 test-merge:
 	@REV=$$(git merge-base origin/master 2>/dev/null) ;\
